@@ -489,7 +489,6 @@ def main():
             with torch.no_grad():
                 logits = model(input_ids, segment_ids, input_mask, labels=None)
 
-            nb_eval_steps += 1
             if len(preds) == 0:
                 preds.append(logits.detach().cpu().numpy())
             else:

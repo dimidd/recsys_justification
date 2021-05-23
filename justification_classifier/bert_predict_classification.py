@@ -111,6 +111,13 @@ class JustificationProcessor(DataProcessor):
         return
 
     def get_test_examples(self, data_dir):
+        input_file = 'edus_all.tsv'
+        path = os.path.join(data_dir, input_file)
+        lines = self._read_tsv(path)
+
+        return self._create_examples(lines, "test")
+
+    def get_yelp_examples(self, data_dir):
         """See base class."""
         lines = []
         with open(os.path.join(data_dir, "yelp_filter_flat.json"), 'r') as f:
@@ -128,7 +135,8 @@ class JustificationProcessor(DataProcessor):
         examples = []
         for (i, line) in enumerate(lines):
             guid = "%s-%s" % (set_type, i)
-            text_a = line[0]
+            # Skip review number for now
+            text_a = line[1]
             examples.append(
                 InputExample(guid=guid, text_a=text_a, text_b=None, label=None))
         return examples

@@ -23,6 +23,7 @@ import logging
 import os
 import random
 import sys
+import pickle
 
 import numpy as np
 import torch
@@ -66,6 +67,8 @@ class InputExample(object):
         self.text_b = text_b
         self.label = label
 
+    def __str__(self):
+        return f"guid: {self.guid} text_a: {self.text_a} text_b: {self.text_b} label: {self.label}"
 
 class InputFeatures(object):
     """A single set of features of data."""
@@ -75,6 +78,7 @@ class InputFeatures(object):
         self.input_mask = input_mask
         self.segment_ids = segment_ids
         self.label_id = label_id
+
 
 
 class DataProcessor(object):
@@ -476,6 +480,7 @@ def main():
 
         logger.info("***** Running test *****")
         logger.info("  Num examples = %d", len(eval_examples))
+        logger.info(f"  First Example: {eval_examples[0]} ")
         logger.info("  Batch size = %d", args.eval_batch_size)
         all_input_ids = torch.tensor([f.input_ids for f in eval_features], dtype=torch.long)
         all_input_mask = torch.tensor([f.input_mask for f in eval_features], dtype=torch.long)
@@ -504,6 +509,9 @@ def main():
                 preds[0] = np.append(
                     preds[0], logits.detach().cpu().numpy(), axis=0)
 
+        logger.info(f"preds[0]: {preds[0]}")
+        with open('preds.pickle', 'wb') as preds_pickle:
+            pickle.dump(preds, preds_pickle)
         preds = preds[0]
         if output_mode == "classification":
             preds = np.argmax(preds, axis=1)

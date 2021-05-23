@@ -488,6 +488,7 @@ def main():
 
         model.eval()
         preds = []
+        result = {}
 
         for input_ids, input_mask, segment_ids in tqdm(eval_dataloader, desc="Evaluating"):
             input_ids = input_ids.to(device)
